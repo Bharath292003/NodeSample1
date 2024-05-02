@@ -1,6 +1,6 @@
 import { hash } from 'bcrypt';
 import { Service } from 'typedi';
-import { HttpException } from '@exceptions/httpException';
+import { HttpException } from '@exceptions/HttpException';
 import { Product } from '@/interfaces/product.interace';
 import { ProductModel } from '@/models/product.model';
 import { exit } from 'process';
@@ -13,17 +13,15 @@ export class ProductService {
     return products;
   }
 
-  public async findProductById(_id: string,productData:Product): Promise<Product> {
-    const findproduct: Product = await ProductModel.findOne({ _id: productData._id });
+  public async findProductById(_id: string): Promise<Product> {
+    const findproduct: Product = await ProductModel.findOne({ _id:_id });
 
     return findproduct;
   }
 
   public async createProduct(ProductData: Product): Promise<Product> {
     const findproduct: Product = await ProductModel.findOne({ ProductName: ProductData.ProductName});
-    if(findproduct){
-        exit;
-    }
+    if(findproduct!=null){ return null;}
     ProductData.ProductId = randomUUID();
     const Products: Product = await ProductModel.create(ProductData);
     return Products;
@@ -31,13 +29,13 @@ export class ProductService {
 
   public async updateProduct(_id: string, productData: Product): Promise<Product> {
     
-    const updateProductById: Product = await ProductModel.findByIdAndUpdate( productData._id, { ...productData });
+    const updateProductById: Product = await ProductModel.findByIdAndUpdate( _id, { ...productData });
    
     return updateProductById;
   }
 
-  public async deleteProduct(_id: string,productData:Product): Promise<Product> {
-    const deleteProductById: Product = await ProductModel.findByIdAndDelete(productData._id,{...productData});
+  public async deleteProduct(_id: string): Promise<Product> {
+    const deleteProductById: Product = await ProductModel.findByIdAndDelete(_id);
 
     return deleteProductById;
   }
